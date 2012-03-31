@@ -1,60 +1,99 @@
-pun =
+compareArrays = (a,b) ->
+	if a.length != b.length
+		return false
 
-	compareArrays: (a,b) ->
-		if a.length != b.length
+	for i in [0...b.length]
+		if (a[i] != b[i])
 			return false
+
+	return true
+
+bindIdent = {}
+sunIdent = {}
+
+seeIfBinding = (bindings, value, pattern) ->
+	# see if it's a value being bound - if so add it to the bindings
+	if pattern.__bindIdent? && pattern.__bindIdent == bindIdent
+		bindings[pattern.binding] = value
+		return true
 	
-		for i in [0...b.length]
-			if a[i].compareArrays
-				if !a[i].compareArrays(b[i]) 
-					return false
-				else 
-					continue
-			if (a[i] != b[i])
-				return false
-	
+	return false
+
+matchInnerPattern = (bindings, value, pattern) ->
+	# if there is an inner pattern we must try and match that too
+	if pattern.innerPattern
+		return matchPattern bindings, pattern.innerPattern, value
+	else
 		return true
 
+matchPattern = (bindings, value, pattern) ->
+
+	if seeIfBinding bindings, value, pattern
+		return matchInnerPattern bindings, value, pattern
+
+	switch typeof pattern
+		
+		# wildcard operator means we accept all
+		when pun._
+			return true
+		
+		# if it is a number, array or boolean etc and perform equality
+		when 'number', 'string', 'boolean', null, undefined
+			if pattern != value
+				return false
+
+		# if it's a function, we want to use instanceof
+		when 'function'
+			if not value instanceof pattern
+				return false
+
+		# else see other possibilties
+		when 'object'
+	
+			# if array
+			if Array.isArray pattern
+				if not compareArrays pattern, value
+					return false
+	
+			# else we need to see if the value has all the properties of the pattern
+			# and whether they equal eachother
+			else				
+				for key, valuePattern of pattern					
+					# check to see if the value of the property should be bound
+					if seeIfBinding bindings, value[key], valuePattern
+						return matchInnerPattern bindings, value[key], valuePattern
+					
+					if value[key] != valuePattern
+						return false
+	
+	return true
+
+
+# export to window if browser or exports if node
+out = window || exports
+
+out.pun =
+
+	# wildcard operator
+	_: {}
+	
+	# use as function arg operator
+	$: (binding, innerPattern) -> {__bindIdent: bindIdent, binding, innerPattern} 
+
+	# allow subpatterns
+	s: (subPattern) -> {__subIdent: subIdent, subPattern}
 
 	match: ->		
-		args = arguments		
+		args = arguments
 		(value) ->
-			0 && 0
-			`outer: //`	
 			for i in [0...args.length]
 				pattern = args[i++]
 				matchFunc = args[i]
-		
-				switch typeof pattern
 				
-					# if it is a number, array or boolean etc and perform equality
-					when 'number', 'string', 'boolean', null, undefined
-						if pattern != value
-							continue
+				bindings = {}				
 				
-					# if it's a function, we want to use instanceof
-					when 'function'
-						if not value instanceof pattern
-							continue
-				
-					# else see other possibilties
-					when 'object'
-					
-						# if array
-						if Array.isArray pattern
-							if not pun.compareArrays pattern, value
-								continue
-					
-						# else we need to see if the value has all the properties of the pattern
-						# and whether they equal eachother
-						else
-							for k, v of pattern
-								if value[k] != v
-									`continue outer`
-				
-				# If there has been no continue up till here, then this pattern must work
-				matchFunc()
-				return
+				if matchPattern bindings, value, pattern
+					return matchFunc.call bindings
 
 					
 					
