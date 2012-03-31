@@ -9,7 +9,7 @@ compareArrays = (a,b) ->
 	return true
 
 bindIdent = {}
-sunIdent = {}
+subIdent = {}
 
 seeIfBinding = (bindings, value, pattern) ->
 	# see if it's a value being bound - if so add it to the bindings
@@ -22,7 +22,7 @@ seeIfBinding = (bindings, value, pattern) ->
 matchInnerPattern = (bindings, value, pattern) ->
 	# if there is an inner pattern we must try and match that too
 	if pattern.innerPattern
-		return matchPattern bindings, pattern.innerPattern, value
+		return matchPattern bindings, value, pattern.innerPattern
 	else
 		return true
 
@@ -31,11 +31,11 @@ matchPattern = (bindings, value, pattern) ->
 	if seeIfBinding bindings, value, pattern
 		return matchInnerPattern bindings, value, pattern
 
+	# wildcard operator means we accept all
+	if pattern == pun._
+		return true
+
 	switch typeof pattern
-		
-		# wildcard operator means we accept all
-		when pun._
-			return true
 		
 		# if it is a number, array or boolean etc and perform equality
 		when 'number', 'string', 'boolean', null, undefined
@@ -58,12 +58,9 @@ matchPattern = (bindings, value, pattern) ->
 			# else we need to see if the value has all the properties of the pattern
 			# and whether they equal eachother
 			else				
-				for key, valuePattern of pattern					
-					# check to see if the value of the property should be bound
-					if seeIfBinding bindings, value[key], valuePattern
-						return matchInnerPattern bindings, value[key], valuePattern
-					
-					if value[key] != valuePattern
+				for key, valuePattern of pattern
+					# see if the value matches it's pattern
+					if not matchPattern bindings, value[key], valuePattern
 						return false
 	
 	return true
