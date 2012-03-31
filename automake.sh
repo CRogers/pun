@@ -2,6 +2,6 @@
 
 while true
 do
-	inotifywait -e modify src/*.coffee
+	inotifywait -q -e close_write src/*.coffee
 	make
 done
