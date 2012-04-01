@@ -72,16 +72,14 @@ matchPattern = (bindings, args, value, pattern) ->
 					return false
 					
 				for i in [0...value.length]
-					if not matchPattern bindings, args, value[i], pattern[i]
-						return false
+					return matchPattern bindings, args, value[i], pattern[i]
 	
 			# else we need to see if the value has all the properties of the pattern
 			# and whether they equal eachother
 			else				
 				for key, valuePattern of pattern
 					# see if the value matches it's pattern
-					if not matchPattern bindings, args, value[key], valuePattern
-						return false
+					return matchPattern bindings, args, value[key], valuePattern
 	
 	return true
 
