@@ -9,9 +9,10 @@ compareArrays = (a,b) ->
 	return true
 
 bindIdent = {}
+rawBindIdent = {}
 subIdent = {}
 
-seeIfBinding = (bindings, value, pattern) ->
+seeIfBinding = (bindings, args, value, pattern) ->
 	# see if it's a value being bound - if so add it to the bindings
 	if pattern.__bindIdent? && pattern.__bindIdent == bindIdent
 		bindings[pattern.binding] = value
@@ -19,22 +20,27 @@ seeIfBinding = (bindings, value, pattern) ->
 	
 	return false
 
-matchInnerPattern = (bindings, value, pattern) ->
+matchInnerPattern = (bindings, args, value, pattern) ->
 	# if there is an inner pattern we must try and match that too
 	if pattern.innerPattern
-		return matchPattern bindings, value, pattern.innerPattern
+		return matchPattern bindings, args, value, pattern.innerPattern
 	else
 		return true
 
-matchPattern = (bindings, value, pattern) ->
-
-	if seeIfBinding bindings, value, pattern
-		return matchInnerPattern bindings, value, pattern
+matchPattern = (bindings, args, value, pattern) ->
 
 	# wildcard operator means we accept all
 	if pattern == pun._
 		return true
 
+	# see if it's a "raw param"
+	if pattern.__rawBindIdent == rawBindIdent
+		args.push value
+		return true
+	
+	if seeIfBinding bindings, args, value, pattern
+		return matchInnerPattern bindings, args, value, pattern
+	
 	switch typeof pattern
 		
 		# if it is a number, array or boolean etc and perform equality
@@ -43,7 +49,7 @@ matchPattern = (bindings, value, pattern) ->
 				return false
 
 		# if it's a function, we want to use instanceof
-		when 'function'
+		when 'function'		
 			if not value instanceof pattern
 				return false
 
@@ -57,7 +63,7 @@ matchPattern = (bindings, value, pattern) ->
 					return false
 					
 				for i in [0...value.length]
-					if not matchPattern bindings, value[i], pattern[i]
+					if not matchPattern bindings, args, value[i], pattern[i]
 						return false
 	
 			# else we need to see if the value has all the properties of the pattern
@@ -65,7 +71,7 @@ matchPattern = (bindings, value, pattern) ->
 			else				
 				for key, valuePattern of pattern
 					# see if the value matches it's pattern
-					if not matchPattern bindings, value[key], valuePattern
+					if not matchPattern bindings, args, value[key], valuePattern
 						return false
 	
 	return true
@@ -92,10 +98,12 @@ out.pun =
 				pattern = args[i++]
 				matchFunc = args[i]
 				
-				bindings = {}				
+				bindings = {}
+				matchArgs = []
 				
-				if matchPattern bindings, value, pattern
-					return matchFunc.call bindings
+				if matchPattern bindings, matchArgs, value, pattern
+					return matchFunc.apply bindings, matchArgs
 
 					
-					
+# add an ident to the raw $ so we can use it as a param
+out.pun.$.__rawBindIdent = rawBindIdent
