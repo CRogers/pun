@@ -1,13 +1,3 @@
-compareArrays = (a,b) ->
-	if a.length != b.length
-		return false
-
-	for i in [0...b.length]
-		if (a[i] != b[i])
-			return false
-
-	return true
-
 bindIdent = {}
 rawBindIdent = {}
 subIdent = {}
