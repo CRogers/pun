@@ -4,9 +4,9 @@ $ = pun.$
 class Cat
 
 f = pun.match(
-	Number,  -> "Number",
-	String,  -> "String",
-	Boolean, -> "Boolean",
+	Number,  -> "Number"
+	String,  -> "String"
+	Boolean, -> "Boolean"
 	Cat,      -> "Cat"
 )
 

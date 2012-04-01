@@ -4,7 +4,7 @@ $ = pun.$
 
 foldl = (f, b) ->
 	pun.match(
-		[],      -> b,
+		[],      -> b
 		$,  (xs) -> foldl(f, (f b, xs[0]))(xs[1..])
 	)
 
