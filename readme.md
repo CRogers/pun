@@ -11,6 +11,7 @@ Pun allows for complex pattern matching in javascript/coffeescript. Let's dive i
 **Hello, factorial**
 
 _Coffeescript_
+
 ```coffeescript
 $ = pun.$
 
@@ -21,6 +22,7 @@ fac = pun.match(
 ```
 
 _Javascript_
+
 ```javascript
 var $ = pun.$
 
