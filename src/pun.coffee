@@ -30,7 +30,7 @@ matchInnerPattern = (bindings, args, value, pattern) ->
 matchPattern = (bindings, args, value, pattern) ->
 
 	# wildcard operator means we accept all
-	if pattern == pun._
+	if pattern == out.pun._
 		return true
 
 	# see if it's a "raw param"
@@ -78,7 +78,7 @@ matchPattern = (bindings, args, value, pattern) ->
 
 
 # export to window if browser or exports if node
-out = window || exports
+out = (this.windows || exports)
 
 out.pun =
 
