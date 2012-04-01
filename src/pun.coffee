@@ -52,8 +52,13 @@ matchPattern = (bindings, value, pattern) ->
 	
 			# if array
 			if Array.isArray pattern
-				if not compareArrays pattern, value
+				# for each value in the array check that it matches the pattern
+				if(value.length != pattern.length)
 					return false
+					
+				for i in [0...value.length]
+					if not matchPattern bindings, value[i], pattern[i]
+						return false
 	
 			# else we need to see if the value has all the properties of the pattern
 			# and whether they equal eachother
