@@ -45,13 +45,22 @@ matchPattern = (bindings, args, value, pattern) ->
 		
 		# if it is a number, array or boolean etc and perform equality
 		when 'number', 'string', 'boolean', null, undefined
-			if pattern != value
-				return false
+			return pattern == value
 
-		# if it's a function, we want to use instanceof
-		when 'function'		
-			if not value instanceof pattern
-				return false
+		# if it's a function, we see if its constructor is the same as the pattern 
+		when 'function'
+			vtype = typeof value
+			# Deal with annoying literal cases - allow fall through to below statement 
+			# to deal with new Number(4) etc
+			switch pattern
+				when Number
+					return vtype == 'number' || value instanceof Number 
+				when String
+					return vtype == 'string' || value instanceof String
+				when Boolean
+					return vtype == 'boolean' || value instanceof Boolean
+				else 
+					return value instanceof pattern
 
 		# else see other possibilties
 		when 'object'
