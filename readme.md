@@ -157,11 +157,11 @@ $ = pun.$
 
 f = pun.match(
 	{a: 0, b: "lol"},          -> "One"
-	{a: 0},                    -> "Two"
-	{a: 0, b: $('n',Number)},  -> "Three #{@n}"
+	{a: 0, b: $('n',Number)},  -> "Two #{@n}"
+	{a: 0},                    -> "Three"
 )
 
-f({a:0})               # "Two"
+f({a:0})               # "Three"
 f({a:0, b:"lol", c:1}) # "One"
-f({a:0, b: 4})         # "Three 4"
+f({a:0, b: 4})         # "Two 4"
 ```

@@ -19,7 +19,7 @@ sum = (a,b) -> a + b
 console.log foldl(sum, 0)([1..10])
 console.log foldr(sum, 0)([1..10])
 
-###>>
+###<<
 55
 55
-<<###
+>>###

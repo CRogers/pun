@@ -8,14 +8,14 @@
   }, function() {
     return "One";
   }, {
-    a: 0
-  }, function() {
-    return "Two";
-  }, {
     a: 0,
     b: $('n', Number)
   }, function() {
-    return "Three " + this.n;
+    return "Two " + this.n;
+  }, {
+    a: 0
+  }, function() {
+    return "Three";
   });
   console.log(f({
     a: 0
@@ -29,4 +29,9 @@
     a: 0,
     b: 4
   }));
+  /*<<
+  Three
+  One
+  Two 4
+  >>*/
 }).call(this);

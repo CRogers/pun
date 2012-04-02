@@ -15,9 +15,9 @@ console.log f("foobar")
 console.log f(true)
 console.log f(new Cat())
 
-###>>
+###<<
 Number
 String
 Boolean
 Cat
-<<###
+>>###
