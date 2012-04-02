@@ -1,6 +1,5 @@
 bindIdent = {}
 rawBindIdent = {}
-subIdent = {}
 
 seeIfBinding = (bindings, args, value, pattern) ->
 	# see if it's a value being bound - if so add it to the bindings
@@ -82,9 +81,6 @@ addExports(
 	
 	# use as function arg operator
 	$: (binding, innerPattern) -> {__bindIdent: bindIdent, binding, innerPattern} 
-
-	# allow subpatterns
-	s: (subPattern) -> {__subIdent: subIdent, subPattern}
 
 	match: ->		
 		args = arguments
