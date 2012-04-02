@@ -3,6 +3,33 @@ Pun
 
 A tiny functional programming library for Javascript/Coffeescript.
 
+Currying
+---
+
+`pun.curry` allows you to partially apply some values to a function:
+
+```coffeescript
+f = (a,b,c,d) ->
+	[a,b,c,d].join(', ')
+
+fab = pun.curry f, 1, 2
+
+fab(3,4)      # 1, 2, 3, 4
+fab("c", "d") # 1, 2, c, d
+```
+
+`pun.autocurry` allows you to create functions which automatically curry when you apply arguments to them:
+
+```coffeescript```
+# Using f from previous example
+autof = pun.autocurry f
+
+autofab = f(1, 2)
+
+autofab(3,4)      # 1, 2, 3, 4
+autofab("c", "d") # 1, 2, c, d
+```
+
 Pattern Matching
 ---
 
