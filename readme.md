@@ -20,7 +20,7 @@ fab("c", "d") # 1, 2, c, d
 
 `pun.autocurry` allows you to create functions which automatically curry when you apply arguments to them:
 
-```coffeescript```
+```coffeescript
 # Using f from previous example
 autof = pun.autocurry f
 
