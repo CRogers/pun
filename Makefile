@@ -10,7 +10,7 @@ JS  = $(subst src/,lib/,$(SRC:.coffee=.js))
 TESTSRC = $(wildcard src/tests/*.coffee)
 TESTJS  = $(subst src/,,$(TESTSRC:.coffee=.js))
 
-all: $(JS)
+all: $(JS) $(TESTJS)
 	cat lib/start.js $(JS) lib/end.js >lib/pun.js
 	rm $(JS)
 
