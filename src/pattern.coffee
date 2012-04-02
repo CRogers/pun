@@ -4,6 +4,7 @@ rawBindIdent = {}
 seeIfBinding = (bindings, args, value, pattern) ->
 	# see if it's a value being bound - if so add it to the bindings
 	if pattern.__bindIdent? && pattern.__bindIdent == bindIdent
+		
 		bindings[pattern.binding] = value
 		return true
 	
@@ -24,8 +25,12 @@ matchPattern = (bindings, args, value, pattern) ->
 
 	# see if it's a "raw param"
 	if pattern.__rawBindIdent == rawBindIdent
-		args.push value
-		return true
+		# see if the raw binding has an inner pattern
+		if matchInnerPattern bindings, args, value, pattern
+			args.push value
+			return true
+		else
+			return false
 	
 	if seeIfBinding bindings, args, value, pattern
 		return matchInnerPattern bindings, args, value, pattern
@@ -80,7 +85,11 @@ addExports(
 	_: {}
 	
 	# use as function arg operator
-	$: (binding, innerPattern) -> {__bindIdent: bindIdent, binding, innerPattern} 
+	$: (binding, innerPattern) -> 
+		if typeof binding == 'string'
+			{__bindIdent: bindIdent, binding, innerPattern}
+		else
+			{__rawBindIdent: rawBindIdent, innerPattern: binding}
 
 	match: ->		
 		args = arguments
