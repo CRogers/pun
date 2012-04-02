@@ -97,16 +97,17 @@ cf(new Cat()) # "Cat"
 
 **Binding**
 
-The `$` symbol can be used to 'bind' values so that you can use them in the matching function. You can use it without an argument and the bound value will be passed to match function as an argument:
+The `$` symbol can be used to 'bind' values so that you can use them in the matching function. You can use it without an argument and the bound value will be passed to match function as an argument, or with an argument of a pattern to match:
 
 ```coffeescript
 $ = pun.$    # alias $ so we can use it more easily
 
 f = pun.match(
-    $, (a) -> "Got: #{a}"
+    $(Number), (n) -> "Num: #{n}"
+    $,         (a) -> "Got: #{a}"
 )
 
-f(0)    # "Got: 0"
+f(0)    # "Num: 0"
 f(true) # "Got: true"
 f({})   # "Got: [object Object]"
 ```
