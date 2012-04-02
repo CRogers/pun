@@ -11,7 +11,7 @@ TESTSRC = $(wildcard src/tests/*.coffee)
 TESTJS  = $(subst src/,,$(TESTSRC:.coffee=.js))
 
 all: $(JS)
-	cat $(JS) >lib/pun.js
+	cat lib/start.js $(JS) lib/end.js >lib/pun.js
 
 test: $(TESTJS)	
 	#RES  = cat $@ sed -n '/<</,/>>/p' | sed 's/^[ \t]*//'
