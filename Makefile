@@ -10,8 +10,8 @@ JS  = $(subst src/,lib/,$(SRC:.coffee=.js))
 TESTSRC = $(wildcard src/tests/*.coffee)
 TESTJS  = $(subst src/,,$(TESTSRC:.coffee=.js))
 
-test: $(TESTJS)
-	
-	#RES  = cat $@ sed -n '/<</,/>>/p' | sed 's/^[ \t]*//'
-
 all: $(JS)
+	cat $(JS) >lib/pun.js
+
+test: $(TESTJS)	
+	#RES  = cat $@ sed -n '/<</,/>>/p' | sed 's/^[ \t]*//'
