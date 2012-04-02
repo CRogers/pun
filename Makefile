@@ -12,6 +12,7 @@ TESTJS  = $(subst src/,,$(TESTSRC:.coffee=.js))
 
 all: $(JS)
 	cat lib/start.js $(JS) lib/end.js >lib/pun.js
+	rm $(JS)
 
 test: $(TESTJS)	
 	#RES  = cat $@ sed -n '/<</,/>>/p' | sed 's/^[ \t]*//'
