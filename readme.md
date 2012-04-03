@@ -30,6 +30,23 @@ autofab(3,4)      # 1, 2, 3, 4
 autofab("c", "d") # 1, 2, c, d
 ```
 
+Abstract Data Types
+---
+
+You can use ADTs like so:
+
+```coffeescript
+List = pun.ADT
+	Cons: ['value', 'next']
+	Nil:  []
+
+l = List.Cons(1, List.Cons(2, List.Nil()))  # Linked list for [1,2]
+l.value                                     # 1
+l.next.value                                # 2
+```
+
+And can apply pattern matching!
+
 Pattern Matching
 ---
 
@@ -192,4 +209,19 @@ f = pun.match(
 f({a:0})               # "Three"
 f({a:0, b:"lol", c:1}) # "One"
 f({a:0, b: 4})         # "Two 4"
+```
+
+**Abstract Data Types**
+
+ADTs can also be matched:
+
+```coffeescript
+$ = pun.$
+
+from = pun.match(
+	List.Nil(),               -> []
+	List.Cons($, $),  (x, xs) -> [x].concat from(xs)
+)
+
+from(List.Cons 1, List.Cons 2, List.Cons 3, List.Nil())  # [1,2,3]
 ```
