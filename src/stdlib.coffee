@@ -80,12 +80,20 @@ foldr = (f, z) ->
 
 foldr1 = (f, xs) -> foldr(f, xs[0], xs[1..])
 
+foldBT = (f, g) ->
+	pun.match(
+		BTree.Leaf($),         (v) -> f v
+		BTree.Branch($, $), (l, r) -> g ((foldBT f, g) l), ((foldBT f, g) r)
+	)
+
 unfold = (f) ->
 	(z) ->
 		pun.match(
 			Maybe.None(),                      -> List.Nil()
 			Maybe.Just(Tuple.T2($, $)), (a, b) -> List.Cons(a, (unfold f) b)
 		)(f z)
+
+
 
 #
 # END FUNCTIONS
@@ -103,6 +111,8 @@ stdfuncs =
 	
 	foldr: pun.uncurry foldr, 2, 1
 	foldr1: pun.autocurry foldr1, 2
+	
+	foldBT: pun.uncurry foldBT, 2, 1
 	
 	unfold: pun.uncurry unfold, 1, 1
 	
