@@ -16,10 +16,10 @@ addExports(
 					# check to see if C has been called with `new`
 					if not (this instanceof Ctorf)
 						# if not pass arguments as single arg back to C
-						return new Ctorf(newlessContructorObj, args)
+						return new Ctorf(newlessConstructorObj, args)
 					
 					# check if we got here from the line above, if so the args were passed in the second arg
-					args = (args[0] == newlessConstructorObj) ? args[1] : args
+					args = if (args[0] == newlessConstructorObj) then args[1] else args
 					
 					# for each param assign its value
 					for i in [0...params.length]
@@ -32,6 +32,9 @@ addExports(
 						j = i
 						Ctorf::__defineGetter__("__ADT_#{i}", -> @[params[j]])
 					)()
+				
+				# add ADT ident to Ctorf function for use in pattern matching
+				Ctorf.__ADTIdent = ADTIdent
 				
 				# auto 'new' so new is not required for making type
 				retStruct[ctor] = Ctorf
