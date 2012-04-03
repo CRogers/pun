@@ -7,6 +7,16 @@ stdtypes =
 	BTree: pun.ADT
 		Branch: ['left', 'right']
 		Leaf:   ['value']
+	
+	Maybe: pun.ADT
+		Just: ['value']
+		None: []
+	
+	Tuple: pun.ADT
+		T1: ['_1']
+		T2: ['_1', '_2']
+		T3: ['_1', '_2', '_3']
+		
 
 addExports stdtypes
 
@@ -38,6 +48,11 @@ toList = pun.match(
 	$,  (xs) -> List.Cons(xs[0], toList xs[1..])
 )
 
+toArray = pun.match(
+	List.Nil(),                -> []
+	List.Cons($, $), (x, xs) -> [x].concat(toArray xs)
+)
+
 map = (f) ->
 	pun.match(
 		$(Array),              (a) -> a.map f
@@ -51,9 +66,26 @@ foldl = (f, z) ->
 	pun.match(
 		$(Array),            (a) -> ([z].concat a).reduce f
 		List.Nil(),              -> z
-		List.Cons($, $), (x, xs) -> foldl f, (f z x), xs
+		List.Cons($, $), (x, xs) -> (foldl f, (f z, x))(xs)
 	)
 
+foldl1 = (f, xs) -> foldl(f, xs[0], xs[1..])
+
+foldr = (f, z) ->
+	pun.match(
+		$(Array),            (a) -> ([z].concat a).reduceRight f
+		List.Nil(),              -> z
+		List.Cons($, $), (x, xs) -> f x, ((foldr f, z)(xs))
+	)
+
+foldr1 = (f, xs) -> foldr(f, xs[0], xs[1..])
+
+unfold = (f) ->
+	(z) ->
+		pun.match(
+			Maybe.None(),                      -> List.Nil()
+			Maybe.Just(Tuple.T2($, $)), (a, b) -> List.Cons(a, (unfold f) b)
+		)(f z)
 
 #
 # END FUNCTIONS
@@ -61,10 +93,17 @@ foldl = (f, z) ->
 
 stdfuncs =
 	
+	toList: toList
+	toArray: toArray
+	
 	map: pun.uncurry map, 1, 1
 	
 	foldl: pun.uncurry foldl, 2, 1
+	foldl1: pun.autocurry foldl1, 2
 	
-	toList: toList
-
+	foldr: pun.uncurry foldr, 2, 1
+	foldr1: pun.autocurry foldr1, 2
+	
+	unfold: pun.uncurry unfold, 1, 1
+	
 addExports stdfuncs
