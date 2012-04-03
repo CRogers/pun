@@ -60,18 +60,15 @@ matchPattern = (bindings, args, value, pattern) ->
 		when 'object'
 	
 			# if array
-			if Array.isArray pattern
-				# for each value in the array check that it matches the pattern
-				if(value.length != pattern.length)
-					return false
-					
-				for i in [0...value.length]
-					if not matchPattern bindings, args, value[i], pattern[i]
+			if Array.isArray pattern				
+				# for each value in the array check that it matches the pattern	
+				for i in [0...pattern.length]
+					if not matchPattern bindings, args, value[i+valueOffset], pattern[i]
 						return false
 	
 			# else we need to see if the value has all the properties of the pattern
 			# and whether they equal eachother
-			else				
+			else
 				for key, valuePattern of pattern
 					# see if the value matches it's pattern
 					if not matchPattern bindings, args, value[key], valuePattern
@@ -83,6 +80,7 @@ matchPattern = (bindings, args, value, pattern) ->
 addExports(
 	# wildcard operator
 	_: {}
+	wildcard: pun._
 	
 	# use as function arg operator
 	$: (binding, innerPattern) -> 
@@ -90,7 +88,9 @@ addExports(
 			{__bindIdent: bindIdent, binding, innerPattern}
 		else
 			{__rawBindIdent: rawBindIdent, innerPattern: binding}
-
+	
+	bind: pun.$
+	
 	match: ->		
 		args = arguments
 		(value) ->
