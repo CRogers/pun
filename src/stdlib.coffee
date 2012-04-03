@@ -42,8 +42,8 @@ map = (f) ->
 	pun.match(
 		$(Array),              (a) -> a.map f
 		List.Nil(),                -> List.Nil()
-		List.Cons($, $),    (x,xs) -> List.Cons (f x) ((map f) xs)
-		BTree.Branch($, $), (l, r) -> BTree.Branch ((map f) l) ((map f) r)
+		List.Cons($, $),    (x,xs) -> List.Cons (f x), ((map f) xs)
+		BTree.Branch($, $), (l, r) -> BTree.Branch ((map f) l), ((map f) r)
 		BTree.Leaf($),         (v) -> f v
 	)
 
