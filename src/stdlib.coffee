@@ -8,6 +8,10 @@ stdtypes =
 		Branch: ['left', 'right']
 		Leaf:   ['value']
 	
+	Tree: pun.ADT
+		Branch: ['branches']
+		Leaf:   ['value']
+	
 	Maybe: pun.ADT
 		Just: ['value']
 		None: []
@@ -43,6 +47,11 @@ pun.copyStdtypes this
 # FUNCTIONS
 #
 
+id = (x) -> x
+
+constant = (a) ->
+	-> a
+
 toList = pun.match(
 	[],      -> List.Nil()
 	$,  (xs) -> List.Cons(xs[0], toList xs[1..])
@@ -58,8 +67,10 @@ map = (f) ->
 		$(Array),              (a) -> a.map f
 		List.Nil(),                -> List.Nil()
 		List.Cons($, $),    (x,xs) -> List.Cons (f x), ((map f) xs)
+		BTree.Leaf($),         (v) -> BTree.Leaf(f v)
 		BTree.Branch($, $), (l, r) -> BTree.Branch ((map f) l), ((map f) r)
-		BTree.Leaf($),         (v) -> f v
+		Tree.Leaf($),          (v) -> Tree.Leaf(f v)
+		Tree.Branch($),       (bs) -> Tree.Branch ((map (map f)) bs)
 	)
 
 foldl = (f, z) ->
@@ -86,11 +97,24 @@ foldBT = (f, g) ->
 		BTree.Branch($, $), (l, r) -> g ((foldBT f, g) l), ((foldBT f, g) r)
 	)
 
+foldT = (f, g) ->
+	pun.match(
+		Tree.Leaf($),   (v) -> f v
+		Tree.Branch($), (bs) -> g ((map (foldT f, g)) bs)
+	)
+
 unfold = (f) ->
 	(z) ->
 		pun.match(
+			Maybe.None(),                      -> []
+			Maybe.Just(Tuple.T2($, $)), (a, b) -> [a].concat ((unfold f) b)
+		)(f z)
+
+unfoldL = (f) ->
+	(z) ->
+		pun.match(
 			Maybe.None(),                      -> List.Nil()
-			Maybe.Just(Tuple.T2($, $)), (a, b) -> List.Cons(a, (unfold f) b)
+			Maybe.Just(Tuple.T2($, $)), (a, b) -> List.Cons(a, (unfoldL f) b)
 		)(f z)
 
 
@@ -102,7 +126,10 @@ unfold = (f) ->
 stdfuncs =
 	
 	toList: toList
-	toArray: toArray
+	toArray: toList
+	
+	id: id
+	constant: constant
 	
 	map: pun.uncurry map, 1, 1
 	
@@ -113,7 +140,9 @@ stdfuncs =
 	foldr1: pun.autocurry foldr1, 2
 	
 	foldBT: pun.uncurry foldBT, 2, 1
+	foldT: pun.uncurry foldT, 2, 1
 	
 	unfold: pun.uncurry unfold, 1, 1
+	unfoldL: pun.uncurry unfoldL, 1, 1
 	
 addExports stdfuncs
