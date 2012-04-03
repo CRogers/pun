@@ -16,12 +16,12 @@ addExports
 			obj[k] = v
 	
 	copyStdfuncs: (obj) ->
-		for k, b of stdfuncs
+		for k, v of stdfuncs
 			obj[k] = v
 	
 	copyStdlib: (obj) ->
-		copyStdtypes(obj)
-		copyStdfuncs(obj)
+		pun.copyStdtypes(obj)
+		pun.copyStdfuncs(obj)
 
 
 $ = pun.$
@@ -64,5 +64,7 @@ stdfuncs =
 	map: pun.uncurry map, 1, 1
 	
 	foldl: pun.uncurry foldl, 2, 1
+	
+	toList: toList
 
 addExports stdfuncs
