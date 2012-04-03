@@ -52,6 +52,14 @@ id = (x) -> x
 constant = (a) ->
 	-> a
 
+add = (a, b) -> a + b
+sub = (a, b) -> a - b
+div = (a, b) -> a / b
+mul = (a, b) -> a * b
+
+square = (a) -> a * a
+cube = (a) -> a * a * a
+
 toList = pun.match(
 	[],      -> List.Nil()
 	$,  (xs) -> List.Cons(xs[0], toList xs[1..])
@@ -130,6 +138,14 @@ stdfuncs =
 	
 	id: id
 	constant: constant
+	
+	add: pun.autocurry add, 2
+	sub: pun.autocurry sub, 2
+	div: pun.autocurry div, 2
+	mul: pun.autocurry mul, 2
+	
+	square: square
+	cube: cube
 	
 	map: pun.uncurry map, 1, 1
 	

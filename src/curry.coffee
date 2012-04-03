@@ -27,10 +27,10 @@ addExports(
 			return
 				
 	
-	autocurry: (n, f) ->
+	autocurry: (f, n) ->
 		(args...) ->
 			if n - args.length <= 0
 				f.apply this, args
 			else
-				pun.autocurry (n - args.length), pun.curry.apply(this, [f].concat args)
+				pun.autocurry pun.curry.apply(this, [f].concat args), (n - args.length)
 )

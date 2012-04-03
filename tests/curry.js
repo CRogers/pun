@@ -7,7 +7,7 @@
   fab = pun.curry(f, 1, 2);
   console.log(fab(3, 4));
   console.log(fab("c", "d"));
-  autof = pun.autocurry(f);
+  autof = pun.autocurry(f, 4);
   autofab = f(1, 2);
   console.log(autofab(3, 4));
   console.log(autofab("c", "d"));
