@@ -34,7 +34,8 @@ addExports(
 					)()
 				
 				# add ADT ident to Ctorf function for use in pattern matching
-				Ctorf.__ADTIdent = ADTIdent
+				Ctorf::__defineGetter__('__ADTIdent', -> ADTIdent)
+				Ctorf::__defineGetter__('__ADTArgs', -> params.length)
 				
 				# auto 'new' so new is not required for making type
 				retStruct[ctor] = Ctorf

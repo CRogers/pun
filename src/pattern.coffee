@@ -31,6 +31,23 @@ matchPattern = (bindings, args, value, pattern) ->
 			return true
 		else
 			return false
+			
+	# see if patterns an ADT
+	if pattern.__ADTIdent == ADTIdent
+		# check value is an ADT
+		if value.__ADTIdent != ADTIdent
+			return false
+		
+		# check they are the same ADT
+		if not (value instanceof pattern.constructor)
+			return false
+		
+		# for each arg see if it matches
+		for i in [0...pattern.__ADTArgs]
+			if not matchPattern bindings, args, value["__ADT_#{i}"], pattern["__ADT_#{i}"]
+				return false
+		
+		return true
 	
 	if seeIfBinding bindings, args, value, pattern
 		return matchInnerPattern bindings, args, value, pattern
@@ -60,10 +77,14 @@ matchPattern = (bindings, args, value, pattern) ->
 		when 'object'
 	
 			# if array
-			if Array.isArray pattern				
+			if Array.isArray pattern
+				# check arrays are the same length
+				if pattern.length != value.length
+					return false
+									
 				# for each value in the array check that it matches the pattern	
 				for i in [0...pattern.length]
-					if not matchPattern bindings, args, value[i+valueOffset], pattern[i]
+					if not matchPattern bindings, args, value[i], pattern[i]
 						return false
 	
 			# else we need to see if the value has all the properties of the pattern
