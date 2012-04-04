@@ -30,7 +30,10 @@ addExports(
 				for i in [0...params.length]
 					(->
 						j = i
-						Ctorf::__defineGetter__("__ADT_#{i}", -> @[params[j]])
+						param = params[j]
+						Ctorf::__defineGetter__("__ADT_#{i}", -> @[param])
+						# Add a static method to extract each param
+						Ctorf[param] = (a) -> a[param]
 					)()
 				
 				# add ADT ident to Ctorf function for use in pattern matching
