@@ -24,7 +24,7 @@ fab("c", "d") # 1, 2, c, d
 # Using f from previous example
 autof = pun.autocurry f
 
-autofab = f(1, 2)
+autofab = autof(1, 2)
 
 autofab(3,4)      # 1, 2, 3, 4
 autofab("c", "d") # 1, 2, c, d
