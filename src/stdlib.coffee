@@ -24,7 +24,8 @@ stdtypes =
 		T1: ['_1']
 		T2: ['_1', '_2']
 		T3: ['_1', '_2', '_3']
-		
+
+{List, BTree, Tree, Maybe, Either, Tuple} = stdtypes
 
 addExports stdtypes
 
@@ -91,7 +92,7 @@ toList = pun.match(
 )
 
 toArray = pun.match(
-	List.Nil(),                -> []
+	List.Nil(),              -> []
 	List.Cons($, $), (x, xs) -> [x].concat(toArray xs)
 )
 
