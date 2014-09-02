@@ -3,7 +3,7 @@ Pun
 
 A tiny functional programming library for Javascript/Coffeescript.
 
-Now [availiable on NPM](https://www.npmjs.org/package/pun)!
+Now [available on NPM](https://www.npmjs.org/package/pun)!
 
 Currying
 ---
