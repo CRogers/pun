@@ -208,7 +208,7 @@ any = (p) -> foldr ((a,b) -> boolor(p a, b)), true
 stdfuncs =
 	
 	toList: toList
-	toArray: toList
+	toArray: toArray
 	
 	id: id
 	constant: constant
